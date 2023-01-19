@@ -2,6 +2,7 @@ package com.goodatlas.audiorecord;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
+import android.media.AudioManager;
 import android.media.MediaRecorder.AudioSource;
 import android.util.Base64;
 import android.util.Log;
@@ -61,10 +62,16 @@ public class RNAudioRecordModule extends ReactContextBaseJavaModule {
             }
         }
 
-        audioFormat = AudioFormat.ENCODING_PCM_16BIT;
+        audioFormat = AudioFormat.ENCODING_PCM_FLOAT;
         if (options.hasKey("bitsPerSample")) {
             if (options.getInt("bitsPerSample") == 8) {
                 audioFormat = AudioFormat.ENCODING_PCM_8BIT;
+            } else if (options.getInt("bitsPerSample") == 16) {
+                audioFormat = AudioFormat.ENCODING_PCM_16BIT;
+            } else if (options.getInt("bitsPerSample") == 24) {
+                audioFormat = AudioFormat.ENCODING_PCM_24BIT_PACKED;
+            } else if (options.getInt("bitsPerSample") == 32) {
+                audioFormat = AudioFormat.ENCODING_PCM_32BIT;
             }
         }
 
@@ -87,6 +94,16 @@ public class RNAudioRecordModule extends ReactContextBaseJavaModule {
         bufferSize = AudioRecord.getMinBufferSize(sampleRateInHz, channelConfig, audioFormat);
         int recordingBufferSize = bufferSize * 3;
         recorder = new AudioRecord(audioSource, sampleRateInHz, channelConfig, audioFormat, recordingBufferSize);
+    }
+
+    @ReactMethod
+    public boolean supportsUnprocessed() {
+        String result = AudioManager.getProperty(AudioManager.PROPERTY_SUPPORT_AUDIO_SOURCE_UNPROCESSED);
+        if (result == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     @ReactMethod
