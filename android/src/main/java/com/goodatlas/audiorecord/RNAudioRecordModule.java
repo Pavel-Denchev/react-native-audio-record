@@ -99,9 +99,9 @@ public class RNAudioRecordModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public String supportsUnprocessed() {
+    public void supportsUnprocessed(Promise promise) {
         String result = mAudioManager.getProperty(AudioManager.PROPERTY_SUPPORT_AUDIO_SOURCE_UNPROCESSED);
-        return result;
+        promise.resolve(result);
     }
 
     @ReactMethod

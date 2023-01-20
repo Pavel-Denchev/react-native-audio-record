@@ -4,7 +4,7 @@ declare module "@pdenchev/react-native-audio-record" {
     start: () => void
     stop: () => Promise<string>
     on: (event: "data", callback: (data: string) => void) => void
-    supportsUnprocessed: () => String
+    supportsUnprocessed: () => Promise<string>
   }
 
   export interface Options {
