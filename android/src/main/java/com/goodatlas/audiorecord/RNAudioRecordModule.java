@@ -83,11 +83,15 @@ public class RNAudioRecordModule extends ReactContextBaseJavaModule {
         }
 
         String documentDirectoryPath = getReactApplicationContext().getFilesDir().getAbsolutePath();
+        String path = documentDirectoryPath;
+        if (options.hasKey("path")) {
+            path = options.getString("path");
+        }
         outFile = documentDirectoryPath + "/" + "audio.wav";
         tmpFile = documentDirectoryPath + "/" + "temp.pcm";
         if (options.hasKey("wavFile")) {
             String fileName = options.getString("wavFile");
-            outFile = documentDirectoryPath + "/" + fileName;
+            outFile = path + "/" + fileName;
         }
 
         isRecording = false;
@@ -180,7 +184,10 @@ public class RNAudioRecordModule extends ReactContextBaseJavaModule {
 
         long sampleRate = sampleRateInHz;
         int channels = channelConfig == AudioFormat.CHANNEL_IN_MONO ? 1 : 2;
-        int bitsPerSample = audioFormat == AudioFormat.ENCODING_PCM_8BIT ? 8 : 16;
+        int bitsPerSample = audioFormat == AudioFormat.ENCODING_PCM_8BIT ? 8
+                : audioFormat == AudioFormat.ENCODING_PCM_16BIT ? 16
+                        : audioFormat == AudioFormat.ENCODING_PCM_24BIT_PACKED ? 24
+                                : 32;
         long byteRate = sampleRate * channels * bitsPerSample / 8;
         int blockAlign = channels * bitsPerSample / 8;
 
